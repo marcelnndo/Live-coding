@@ -3,9 +3,10 @@ import SplashScreen from './components/SplashScreen';
 import HomeMenu from './components/HomeMenu';
 import PrivacyModal from './components/PrivacyModal';
 import EditorApp from './components/EditorApp';
+import UxLibrary from './components/UxLibrary';
 
 export default function App() {
-  const [step, setStep] = useState('splash'); // 'splash' | 'menu' | 'editor'
+  const [step, setStep] = useState('splash');
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   useEffect(() => {
@@ -17,11 +18,13 @@ export default function App() {
 
   if (step === 'splash') return <SplashScreen />;
   if (step === 'editor') return <EditorApp onBackMenu={() => setStep('menu')} />;
+  if (step === 'ux') return <UxLibrary onBackMenu={() => setStep('menu')} />;
 
   return (
     <>
       <HomeMenu 
         onStart={() => setStep('editor')} 
+        onOpenUx={() => setStep('ux')} 
         onOpenPrivacy={() => setShowPrivacy(true)} 
       />
       {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
