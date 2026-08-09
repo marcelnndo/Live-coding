@@ -1,0 +1,74 @@
+.privacy-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 450px;
+  background: transparent;
+  padding: 10px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  font-size: 0.8rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #111;
+}
+
+.modal-body {
+  font-size: 0.65rem;
+  color: #666;
+  line-height: 2;
+  overflow-y: auto;
+  margin-bottom: 24px;
+  padding-right: 6px;
+  letter-spacing: 0.5px;
+}
+
+.modal-body h4 {
+  color: #999;
+  font-size: 0.7rem;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modal-body p {
+  margin-bottom: 12px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #2d7a4f;
+  font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  text-align: left;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #fff;
+}

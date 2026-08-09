@@ -1,0 +1,57 @@
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.preview-box {
+  max-width: 90%;
+  max-height: 70vh;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #222;
+}
+
+.preview-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.preview-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 8px 16px;
+  font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.preview-btn.primary {
+  border-color: #2d7a4f;
+  color: #2d7a4f;
+}
+
+.preview-btn:hover {
+  background: #111;
+  color: #fff;
+}
