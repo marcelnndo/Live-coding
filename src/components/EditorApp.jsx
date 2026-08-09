@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
-import Editor from '@monaco-editor/react'; // Mesin VSCode
+import Editor from '@monaco-editor/react';
 import PreviewModal from './PreviewModal';
 import '../styles/EditorApp.css';
 
 export default function EditorApp({ onBackMenu }) {
   const [language, setLanguage] = useState('html');
-  const [activeTab, setActiveTab] = useState('editor'); // 'editor' atau 'preview'
+  const [activeTab, setActiveTab] = useState('editor');
   const [code, setCode] = useState(
 `<!DOCTYPE html>
 <html>
@@ -55,47 +55,70 @@ export default function EditorApp({ onBackMenu }) {
     }
   };
 
-  // Dinamis merender hasil berdasarkan bahasa
+  // Dinamis merender hasil berdasarkan bahasa (Mesin Python diganti agar SUPER CEPAT)
   const getPreviewContent = () => {
     if (language === 'python') {
       return `
         <!DOCTYPE html>
         <html>
           <head>
-            <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-            <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.3/brython.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.3/brython_stdlib.min.js"></script>
+            <style>
+              body { background: #000; color: #00ff66; font-family: 'Courier New', monospace; padding: 15px; margin: 0; font-size: 14px; }
+              #output { white-space: pre-wrap; margin: 0; }
+            </style>
           </head>
-          <body style="background:#fff; color:#000; padding:10px; font-family:monospace;">
-            <i>Mengeksekusi Python...</i>
-            <py-script>${code}</py-script>
+          <body onload="brython()">
+            <pre id="output">Output Terminal Python:\n------------------------\n</pre>
+            <script type="text/python">
+              import sys
+              from browser import document
+              
+              # Redirect print() python ke dalam HTML
+              class MyOutput:
+                  def write(self, text):
+                      document["output"].text += text
+                  def flush(self):
+                      pass
+                      
+              sys.stdout = MyOutput()
+              sys.stderr = MyOutput()
+
+              # Eksekusi kode user:
+              ${code}
+            </script>
           </body>
         </html>
       `;
     }
     if (language === 'php') {
       return `
-        <body style="background:#fff; color:#333; padding:20px; font-family:sans-serif;">
-          <h3>Mode Preview PHP</h3>
-          <p>Karena PHP berjalan di server, kode tidak dieksekusi di browser secara langsung. Namun syntax kamu sudah berwarna!</p>
-          <pre style="background:#eee; padding:10px; border-radius:5px;">${code}</pre>
+        <body style="background:#1e1e1e; color:#fff; padding:20px; font-family:sans-serif; margin:0;">
+          <h3 style="color:#ffcc00;">Info PHP Mode</h3>
         </body>
       `;
     }
-    return code; // Default HTML/JS/CSS
+    return code; 
   };
 
-  // Template awal jika ganti bahasa
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
-    if (lang === 'python') setCode(`print("Halo Dunia dari Python!")\nprint("Bisa pakai animasi loh!")`);
-    if (lang === 'php') setCode(`<?php\n  echo "Halo Dunia dari PHP!";\n?>`);
-    if (lang === 'html') setCode(`<h1>Halo Dunia</h1>`);
+    if (lang === 'python') {
+      setCode(`import time\n\nprint("Halo dari Python!")\nprint("Ngoding di HP ternyata lancar jaya.")\n\n# Bikin lirik berulang\nfor i in range(3):\n    print(f"Lirik ke-{i+1} viral tiktok...")`);
+    } else if (lang === 'php') {
+      setCode(`<?php\n  echo "Halo Dunia dari PHP!";\n?>`);
+    } else {
+      setCode(`<h1>Halo Dunia</h1>`);
+    }
   };
 
   return (
-    <div className="app">
-      <div className="header">
+    <div className="app" style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', backgroundColor: '#1e1e1e', overflow: 'hidden' }}>
+      
+      {/* Header Statis */}
+      <div className="header" style={{ flexShrink: 0 }}>
         <div className="header-left">
           <svg viewBox="0 0 24 24">
             <polyline points="16 18 22 12 16 6" />
@@ -109,48 +132,58 @@ export default function EditorApp({ onBackMenu }) {
         </div>
       </div>
 
-      {/* Kontrol Tab & Bahasa */}
-      <div className="editor-controls" style={{ display: 'flex', gap: '10px', padding: '0 20px', marginBottom: '10px' }}>
-        <select value={language} onChange={handleLanguageChange} style={{ padding: '8px', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '4px' }}>
+      {/* Kontrol Tab & Bahasa (Menempel Penuh) */}
+      <div style={{ flexShrink: 0, display: 'flex', gap: '8px', padding: '10px 15px', background: '#252526', borderBottom: '1px solid #333' }}>
+        <select value={language} onChange={handleLanguageChange} style={{ flex: 1, padding: '10px', background: '#333', color: '#fff', border: '1px solid #444', borderRadius: '4px', outline: 'none' }}>
           <option value="html">HTML / JS / CSS</option>
-          <option value="python">Python (PyScript)</option>
+          <option value="python">Python (Terminal)</option>
           <option value="php">PHP</option>
         </select>
         
         <button 
           onClick={() => setActiveTab('editor')} 
-          style={{ padding: '8px 15px', background: activeTab === 'editor' ? '#00ff66' : '#333', color: activeTab === 'editor' ? '#000' : '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+          style={{ flex: 1, padding: '10px', background: activeTab === 'editor' ? '#00ff66' : '#333', color: activeTab === 'editor' ? '#000' : '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
           Ngoding
         </button>
         <button 
           onClick={() => setActiveTab('preview')} 
-          style={{ padding: '8px 15px', background: activeTab === 'preview' ? '#00ff66' : '#333', color: activeTab === 'preview' ? '#000' : '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-          Lihat Hasil
+          style={{ flex: 1, padding: '10px', background: activeTab === 'preview' ? '#00ff66' : '#333', color: activeTab === 'preview' ? '#000' : '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+          Hasil
         </button>
       </div>
 
-      <div className="scroll-area" style={{ height: 'calc(100vh - 140px)', padding: '0 20px' }}>
+      {/* Area Kerja Fleksibel (Otomatis Full Screen Tanpa Kepotong) */}
+      <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
         {activeTab === 'editor' && (
-          <div className="code-box" style={{ height: '100%', border: '1px solid #333', borderRadius: '8px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: '100%' }}>
             <Editor
               height="100%"
               language={language}
               theme="vs-dark"
               value={code}
               onChange={(value) => setCode(value || '')}
-              options={{ minimap: { enabled: false }, fontSize: 14, wordWrap: "on" }}
+              options={{ 
+                minimap: { enabled: false }, 
+                fontSize: 14, 
+                wordWrap: "on",
+                padding: { top: 15 }
+              }}
             />
           </div>
         )}
 
         {activeTab === 'preview' && (
-          <div className="result-box" style={{ height: '100%', background: '#fff', borderRadius: '8px', overflow: 'hidden' }}>
-            <iframe srcDoc={getPreviewContent()} title="output" style={{ width: '100%', height: '100%', border: 'none' }} />
+          <div style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
+            <iframe 
+              srcDoc={getPreviewContent()} 
+              title="output" 
+              style={{ width: '100%', height: '100%', border: 'none', display: 'block' }} 
+            />
           </div>
         )}
       </div>
 
-      {/* Hidden VS Code Template untuk Screenshot (TIDAK DIUBAH) */}
+      {/* Hidden VS Code Template untuk Screenshot (JANGAN DIHAPUS) */}
       <div className="capture-container" ref={captureRef}>
         <div className="vscode-titlebar">
           <div className="vscode-dots">
