@@ -10,9 +10,10 @@ export default function EditorApp({ onBackMenu }) {
   const [code, setCode] = useState(
 `<!DOCTYPE html>
 <html>
-<body>
-  <div class="box">
-    <h1>halo dunia</h1>
+<body style="background: #000; color: #00ff66; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+  <div>
+    <h1>hacker_mode : ON</h1>
+    <p>Selamat datang di editor dark-mode.</p>
   </div>
 </body>
 </html>`
@@ -55,7 +56,6 @@ export default function EditorApp({ onBackMenu }) {
     }
   };
 
-  // Dinamis merender hasil berdasarkan bahasa (Mesin Python diganti agar SUPER CEPAT)
   const getPreviewContent = () => {
     if (language === 'python') {
       return `
@@ -75,7 +75,6 @@ export default function EditorApp({ onBackMenu }) {
               import sys
               from browser import document
               
-              # Redirect print() python ke dalam HTML
               class MyOutput:
                   def write(self, text):
                       document["output"].text += text
@@ -85,7 +84,6 @@ export default function EditorApp({ onBackMenu }) {
               sys.stdout = MyOutput()
               sys.stderr = MyOutput()
 
-              # Eksekusi kode user:
               ${code}
             </script>
           </body>
@@ -95,7 +93,15 @@ export default function EditorApp({ onBackMenu }) {
     if (language === 'php') {
       return `
         <body style="background:#1e1e1e; color:#fff; padding:20px; font-family:sans-serif; margin:0;">
-          <h3 style="color:#ffcc00;">Info PHP Mode</h3>
+          <h3 style="color:#ffcc00; display:flex; alignItems:center; gap:8px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Info PHP Mode
+          </h3>
+          <p>Fitur eksekusi PHP murni di browser sedang dimatikan. Tapi warna-warni kode (Syntax Highlighting) sudah aktif di editor.</p>
         </body>
       `;
     }
@@ -106,21 +112,20 @@ export default function EditorApp({ onBackMenu }) {
     const lang = e.target.value;
     setLanguage(lang);
     if (lang === 'python') {
-      setCode(`import time\n\nprint("Halo dari Python!")\nprint("Ngoding di HP ternyata lancar jaya.")\n\n# Bikin lirik berulang\nfor i in range(3):\n    print(f"Lirik ke-{i+1} viral tiktok...")`);
+      setCode(`import time\n\nprint("Halo dari Python!")\nprint("Ngoding di HP ternyata lancar jaya.")\n\n# Bikin teks berulang\nfor i in range(3):\n    print(f"Baris ke-{i+1}...")`);
     } else if (lang === 'php') {
       setCode(`<?php\n  echo "Halo Dunia dari PHP!";\n?>`);
     } else {
-      setCode(`<h1>Halo Dunia</h1>`);
+      setCode(`<!DOCTYPE html>\n<html>\n<body style="background: #000; color: #00ff66; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">\n  <div>\n    <h1>hacker_mode : ON</h1>\n    <p>Selamat datang di editor dark-mode.</p>\n  </div>\n</body>\n</html>`);
     }
   };
 
   return (
     <div className="app" style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', backgroundColor: '#1e1e1e', overflow: 'hidden' }}>
       
-      {/* Header Statis */}
       <div className="header" style={{ flexShrink: 0 }}>
         <div className="header-left">
-          <svg viewBox="0 0 24 24">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="#00ff66" fill="none" strokeWidth="2">
             <polyline points="16 18 22 12 16 6" />
             <polyline points="8 6 2 12 8 18" />
           </svg>
@@ -132,7 +137,6 @@ export default function EditorApp({ onBackMenu }) {
         </div>
       </div>
 
-      {/* Kontrol Tab & Bahasa (Menempel Penuh) */}
       <div style={{ flexShrink: 0, display: 'flex', gap: '8px', padding: '10px 15px', background: '#252526', borderBottom: '1px solid #333' }}>
         <select value={language} onChange={handleLanguageChange} style={{ flex: 1, padding: '10px', background: '#333', color: '#fff', border: '1px solid #444', borderRadius: '4px', outline: 'none' }}>
           <option value="html">HTML / JS / CSS</option>
@@ -152,7 +156,6 @@ export default function EditorApp({ onBackMenu }) {
         </button>
       </div>
 
-      {/* Area Kerja Fleksibel (Otomatis Full Screen Tanpa Kepotong) */}
       <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
         {activeTab === 'editor' && (
           <div style={{ height: '100%', width: '100%' }}>
@@ -173,7 +176,7 @@ export default function EditorApp({ onBackMenu }) {
         )}
 
         {activeTab === 'preview' && (
-          <div style={{ height: '100%', width: '100%', backgroundColor: '#fff' }}>
+          <div style={{ height: '100%', width: '100%', backgroundColor: '#000' }}>
             <iframe 
               srcDoc={getPreviewContent()} 
               title="output" 
@@ -183,7 +186,6 @@ export default function EditorApp({ onBackMenu }) {
         )}
       </div>
 
-      {/* Hidden VS Code Template untuk Screenshot (JANGAN DIHAPUS) */}
       <div className="capture-container" ref={captureRef}>
         <div className="vscode-titlebar">
           <div className="vscode-dots">
